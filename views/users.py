@@ -29,7 +29,7 @@ class UsersView(Resource):
             return result, 200
 
 
-        def put(self, id):
+        def patch(self, id):
             request_json = request.json
             if "id" not in request_json:
                 request_json["id"] = id
@@ -41,3 +41,21 @@ class UsersView(Resource):
         def delete(self, id):
             user_service.delete(id)
             return "", 204
+
+    @user_ns.route("/password")
+    class UpdateUserPasswordViews(Resource):
+        def put(self):
+            data = request.json
+            email = data.get("email")
+            old_password = data.get("old_password")
+            new_password = data.get("new_password")
+            user = user_service.get_user_by_email(email)
+            if user_service.compare_passwords(user.password, old_password):
+                user.password = user_service.make_user_password_hash(new_password)
+                result = UserSchema().dump(user)
+                user_service.update(result)
+                print("Пароль обновлён")
+            else:
+                print("Пароль не обновлён")
+            return "", 201
+

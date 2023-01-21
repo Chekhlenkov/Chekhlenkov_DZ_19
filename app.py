@@ -27,13 +27,9 @@ def register_extensions(app):
     api.add_namespace(user_ns)
     api.add_namespace(auth_ns)
 
-
-
-
-
-
 app = create_app(Config())
 app.debug = True
+
 
 if __name__ == '__main__':
     app.run(host="localhost", port=10001, debug=True)
